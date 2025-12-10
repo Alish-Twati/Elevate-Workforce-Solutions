@@ -1,0 +1,177 @@
+# ============================
+# Elevate Workforce Solutions
+# Apache Configuration
+# Author: Alish Twati
+# Version: 1.0
+# ============================
+
+# ==================== REWRITE ENGINE ====================
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /elevate-workforce-solutions/
+    
+    # Prevent access to hidden files and directories
+    RewriteRule "^\.|/\." - [F,L]
+    
+    # Prevent access to sensitive directories
+    RewriteRule ^(config|models|helpers)/.*$ - [F,L]
+</IfModule>
+
+# ==================== DIRECTORY SECURITY ====================
+# Disable directory browsing # Follow symbolic links
+Options -Indexes +FollowSymLinks
+
+
+# Disable server signature
+ServerSignature Off
+
+# ==================== FILE ACCESS PROTECTION ====================
+# Protect all hidden files
+<FilesMatch "^\.|~$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Protect configuration files
+<FilesMatch "(config|database|\.env|composer\.(json|lock))$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Protect log files
+<FilesMatch "\.(log|txt)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Protect backup files
+<FilesMatch "\.(bak|backup|old|orig|save|sql|zip|tar|gz)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Allow uploads directory (but not PHP execution)
+<FilesMatch "^public/uploads/.*\.php$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# ==================== SECURITY HEADERS ====================
+<IfModule mod_headers.c>
+    # Prevent clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+    
+    # XSS Protection
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Prevent MIME sniffing
+    Header always set X-Content-Type-Options "nosniff"
+    
+    # Referrer Policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Permissions Policy
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+    
+    # Remove X-Powered-By header
+    Header unset X-Powered-By
+</IfModule>
+
+# ==================== PHP SETTINGS ====================
+<IfModule mod_php.c>
+    # File upload settings
+    php_value upload_max_filesize 5M
+    php_value post_max_size 10M
+    php_value max_file_uploads 5
+    
+    # Execution time
+    php_value max_execution_time 300
+    php_value max_input_time 300
+    php_value memory_limit 128M
+    
+    # Error handling (enable for debugging)
+    php_flag display_errors On
+    php_flag display_startup_errors On
+    php_flag log_errors On
+    
+    # Session security
+    php_flag session.cookie_httponly On
+    php_flag session.use_only_cookies On
+    php_value session.cookie_lifetime 0
+</IfModule>
+
+# ==================== COMPRESSION ====================
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/json
+</IfModule>
+
+# ==================== BROWSER CACHING ====================
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 month"
+    
+    # Images
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    
+    # CSS and JavaScript
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    
+    # Fonts
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType font/ttf "access plus 1 year"
+    ExpiresByType application/font-woff "access plus 1 year"
+    
+    # HTML - no cache
+    ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+# ==================== UTF-8 ENCODING ====================
+AddDefaultCharset UTF-8
+<IfModule mod_mime.c>
+    AddCharset UTF-8 .html .css .js .xml .json
+</IfModule>
+
+# ==================== END OF CONFIGURATION ====================

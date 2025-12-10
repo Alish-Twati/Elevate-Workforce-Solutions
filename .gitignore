@@ -1,0 +1,72 @@
+# ============================
+# Elevate Workforce Solutions
+# Git Ignore File
+# ============================
+
+# PHP
+*. log
+*.cache
+
+# Composer
+/vendor/
+composer.lock
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+
+# Uploaded files
+public/uploads/resumes/*
+public/uploads/logos/*
+! public/uploads/resumes/.gitkeep
+!public/uploads/logos/.gitkeep
+
+# Temporary files
+*. tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+. DS_Store?
+._*
+.Spotlight-V100
+. Trashes
+ehthumbs.db
+Desktop.ini
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Database dumps
+*. sql. gz
+*.sql.zip
+backup/
+
+# Node modules (if using npm)
+node_modules/
+package-lock.json
+
+# Build files
+/build/
+/dist/
+
+# Cache
+/cache/
+/tmp/
+
+# Config files with sensitive data
+config/database.local.php
